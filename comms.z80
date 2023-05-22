@@ -1,0 +1,334 @@
+; SAM Coupé Printer and RS232 Comms Ports
+; ---------------------------------------
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+; ==========================
+; Parallel Printer Interface
+; ==========================
+
+; Printer ports
+
+PRINTER_0_DATA:     EQU 232
+PRINTER_0_CONTROL:  EQU 233
+
+PRINTER_1_DATA:     EQU 234
+PRINTER_1_CONTROL:  EQU 235
+
+; Write PRINTER_STROBE to PRINTER_x_CONTROL to strobe.
+; Set = Data is ready. Set->Reset transition = Send.
+PRINTER_STROBE:     EQU %00000001
+
+; Read PRINTER_x_CONTROL and mask with PRINTER_BUSY
+; to see if printer is ready for next byte.
+PRINTER_BUSY:       EQU %00000001
+
+; Example of usage:
+; send_byte_to_LPT0:
+;                   ; you may want to implement a watchdog timeout
+;                   ; here... 
+;                   IN A,(PRINTER_0_CONTROL)
+;                   AND PRINTER_BUSY
+;                   JP NZ, send_byte_to_LPT0
+;                   ; emit byte.
+;                   LD A,E
+;                   OUT (PRINTER_0_DATA), A
+;                   LD A,PRINTER_STROBE
+;                   OUT (PRINTER_0_CONTROL), A
+;                   XOR A
+;                   OUT (PRINTER_0_CONTROL), A
+;                   RET
+
+; ==============================
+; Serial Communications Inteface
+; ==============================
+
+; The SAM Coupé uses an SCC2691 UART from Philips Semiconductor
+;
+; Data sheet: https://www.nxp.com/docs/en/data-sheet/SCC2691.pdf
+
+; RS232 Serial Comms port base address
+COMMS_PORT_BASE:    EQU 236
+
+COMMS_0_BASE:       EQU COMMS_PORT_BASE + 0
+COMMS_1_BASE:       EQU COMMS_PORT_BASE + 1
+COMMS_2_BASE:       EQU COMMS_PORT_BASE + 2
+COMMS_3_BASE:       EQU COMMS_PORT_BASE + 3
+
+COMMS_MR:           EQU &0000   ; [R/W] - Mode registers 1 & 2
+COMMS_SR:           EQU &0100   ; [RO]  - Channel Status register
+COMMS_BRG_TEST:     EQU &0200   ; [RO]  - 
+COMMS_RHR:          EQU &0300   ; [RO]  - Recieve Holding register
+COMMS_1X_16X_TEST:  EQU &0400   ; [RO]  - 
+COMMS_ISR:          EQU &0500   ; [RO]  - Interrupt Status register
+COMMS_CTU:          EQU &0600   ; [R/W] - Counter/Timer Upper
+COMMS_CTL:          EQU &0700   ; [R/W] - Counter/Timer Lower
+
+COMMS_CSR:          EQU &0100   ; [WO] - Clock Select register
+COMMS_CR:           EQU &0200   ; [WO] - Command register
+COMMS_THR:          EQU &0300   ; [WO] - Transmit Holding register
+COMMS_ACR:          EQU &0400   ; [WO] - Auxiliary Control register
+COMMS_IMR:          EQU &0500   ; [WO] - Interrupt Mask register
+
+; Mode Register 1 [R/W]
+; =====================
+
+; Mode Register 1 Parity Mode values
+
+COMMS_MR1_WITH_PARITY:      EQU %00000000
+COMMS_MR1_FORCE_PARITY:     EQU %00001000
+COMMS_MR1_NO_PARITY:        EQU %00010000
+COMMS_MR1_SPECIAL_MODE:     EQU %00011000
+COMMS_MR1_PARITY_MODE_MASK: EQU %00011000
+
+; Mode Register 1 Parity Types
+COMMS_MR1_EVEN_PARITY:      EQU %00000000
+COMMS_MR1_ODD_PARITY:       EQU %00000100
+COMMS_MR1_PARITY_TYPE_MASK: EQU %00000100
+
+; Mode Register 1 Bits per Character
+COMMS_MR1_5_BITS_PER_CHAR:    EQU %00000000
+COMMS_MR1_6_BITS_PER_CHAR:    EQU %00000001
+COMMS_MR1_7_BITS_PER_CHAR:    EQU %00000010
+COMMS_MR1_8_BITS_PER_CHAR:    EQU %00000011
+COMMS_MR1_BITS_PER_CHAR_MASK: EQU %00000011
+
+; Mode Register 1 Error Mode
+COMMS_MR1_ERROR_MODE_MASK:    EQU %00100000
+COMMS_MR1_CHAR_ERROR_MODE:    EQU %00000000
+COMMS_MR1_BLOCK_ERROR_MODE:   EQU %00100000
+
+; Mode Register 1 Receiver Interrupt Mode Select
+COMMS_MR1_RX_INT_MASK:         EQU %01000000
+COMMS_MR1_RX_INT_ON_RX_READY:  EQU %00000000
+COMMS_MR1_RX_INT_ON_FIFO_FULL: EQU %01000000
+
+; Mode Register 1 RTS Control Mode Select
+COMMS_MR1_RX_RTS_MASK:         EQU %10000000
+COMMS_MR1_RX_RTS_DISABLED:     EQU %00000000
+COMMS_MR1_RX_RTS_ENABLED:      EQU %10000000
+
+; Mode Register 2 [R/W]
+; =====================
+
+; Mode Register 2 Channel Mode setting
+
+COMMS_MR2_CHANNEL_MODE_MASK:        EQU %11000000
+COMMS_MR2_CHANNEL_MODE_NORMAL:      EQU %00000000
+COMMS_MR2_CHANNEL_MODE_AUTO_ECHO:   EQU %01000000
+COMMS_MR2_CHANNEL_MODE_LOCAL_LOOP:  EQU %10000000
+COMMS_MR2_CHANNEL_MODE_REMOTE_LOOP: EQU %11000000
+
+; Mode Register 2 TX Request-To-Send (RTS) Mode select
+
+COMMS_MR2_TX_RTS_MASK:         EQU %00100000
+COMMS_MR2_TX_RTS_DISABLED:     EQU %00000000
+COMMS_MR2_TX_RTS_ENABLED:      EQU %00100000
+
+; Mode Register 2 Clear-to-Send (CTS) Mode select
+
+COMMS_MR2_CTS_ENABLE_MASK:     EQU %00010000
+COMMS_MR2_CTS_DISABLED:        EQU %00000000
+COMMS_MR2_CTS_ENABLED:         EQU %00010000
+
+; Mode Register 2 Stop Bit Length
+
+; Length of a stop bit vs. normal bit duration.
+; Note: If MR1 is set to 5 Bits per Character mode
+;       the first 8 settings are 0.5 longer than normal.
+;       This is reflected in the naming below.
+
+COMMS_MR2_STOP_BIT_LENGTH_MASK:       EQU %00001111
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_063: EQU %0000
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_125: EQU %0001
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_188: EQU %0010
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_250: EQU %0011
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_313: EQU %0100
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_375: EQU %0101
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_438: EQU %0110
+COMMS_MR2_STOP_BIT_LENGTH_5BPC_1_500: EQU %0111
+COMMS_MR2_STOP_BIT_LENGTH_0_563:      EQU %0000
+COMMS_MR2_STOP_BIT_LENGTH_0_625:      EQU %0001
+COMMS_MR2_STOP_BIT_LENGTH_0_688:      EQU %0010
+COMMS_MR2_STOP_BIT_LENGTH_0_750:      EQU %0011
+COMMS_MR2_STOP_BIT_LENGTH_0_813:      EQU %0100
+COMMS_MR2_STOP_BIT_LENGTH_0_875:      EQU %0101
+COMMS_MR2_STOP_BIT_LENGTH_0_938:      EQU %0110
+COMMS_MR2_STOP_BIT_LENGTH_1_000:      EQU %0111
+COMMS_MR2_STOP_BIT_LENGTH_1_563:      EQU %1000
+COMMS_MR2_STOP_BIT_LENGTH_1_625:      EQU %1001
+COMMS_MR2_STOP_BIT_LENGTH_1_688:      EQU %1010
+COMMS_MR2_STOP_BIT_LENGTH_1_750:      EQU %1011
+COMMS_MR2_STOP_BIT_LENGTH_1_813:      EQU %1100
+COMMS_MR2_STOP_BIT_LENGTH_1_875:      EQU %1101
+COMMS_MR2_STOP_BIT_LENGTH_1_938:      EQU %1110
+COMMS_MR2_STOP_BIT_LENGTH_2_000:      EQU %1111
+
+; Clock Select Register [WO]
+; ==========================
+
+; Multiplier for CLOCKRATE values to align with bits in
+; clock register for RX clock.
+;
+; e.g. to set the clockrate for the RX channel to 7200 baud,
+; use: COMMS_RX_CLOCK_MALIGN * COMMS_CLOCKRATE_7200_BAUD (and
+; set COMMS_ACR_BRG_SET to ACR_BRG_SET_1).
+COMMS_RX_CLOCK_MALIGN:                EQU 16
+
+; Multiplier for CLOCKRATE values to align with bits in
+; clock register for TX clock.
+COMMS_TX_CLOCK_MALIGN:                EQU 1     
+
+; Masks for the two clock settings.
+COMMS_RX_CLOCK_MASK:                  EQU &F0
+COMMS_TX_CLOCK_MASK:                  EQU &0F
+
+; Baud rates:
+; With ACR Baud Generator Set to 0
+
+COMMS_CLOCKRATE_50_BAUD:              EQU %0000
+COMMS_CLOCKRATE_200_BAUD:             EQU %0011
+COMMS_CLOCKRATE_1050_BAUD:            EQU %0111
+COMMS_CLOCKRATE_7200_BAUD:            EQU %1010
+COMMS_CLOCKRATE_38400_BAUD:           EQU %1100
+
+; With ACR Baud Generator Set to 1
+; (Holes are same as set to 0)
+
+COMMS_CLOCKRATE_75_BAUD:              EQU %0000
+COMMS_CLOCKRATE_150_BAUD:             EQU %0011
+COMMS_CLOCKRATE_2000_BAUD:            EQU %0111
+COMMS_CLOCKRATE_1800_BAUD:            EQU %1010
+COMMS_CLOCKRATE_19200_BAUD:           EQU %1100
+
+; Same rate /regardless/ of ACR Baud settings
+
+COMMS_CLOCKRATE_110_BAUD:             EQU %0001
+COMMS_CLOCKRATE_134_5_BAUD:           EQU %0010
+COMMS_CLOCKRATE_300_BAUD:             EQU %0100
+COMMS_CLOCKRATE_600_BAUD:             EQU %0101
+COMMS_CLOCKRATE_1200_BAUD:            EQU %0110
+COMMS_CLOCKRATE_2400_BAUD:            EQU %1000
+COMMS_CLOCKRATE_4800_BAUD:            EQU %1001
+COMMS_CLOCKRATE_9600_BAUD:            EQU %1011
+
+COMMS_CLOCKRATE_TIMER:                EQU %1101
+COMMS_CLOCKRATE_MPI_16X:              EQU %1110
+COMMS_CLOCKRATE_MPI_1X:               EQU %1111
+
+; Command Register [WO]
+; =====================
+
+COMMS_COMMAND_TXRX_ENABLE_MASK:       EQU %00001111
+
+; ENABLE/DISABLE TX and RX commands. 
+; These are weird; you can specify ENABLE/DISABLE RX
+; and ENABLE/DISABLE TX, or even none of them. 
+COMMS_COMMAND_RX_ENABLE_CMD_MASK:     EQU %00000011
+COMMS_COMMAND_ENABLE_RX:              EQU %00000001
+COMMS_COMMAND_DISABLE_RX:             EQU %00000010
+
+COMMS_COMMAND_TX_ENABLE_CMD_MASK:     EQU %00001100
+COMMS_COMMAND_ENABLE_TX:              EQU %00000100
+COMMS_COMMAND_DISABLE_TX:             EQU %00001000
+
+COMMS_MISC_COMMAND_MASK:              EQU %11110000
+COMMS_COMMAND_NONE:                   EQU %00000000
+COMMS_COMMAND_RESET_MR_POINTER:       EQU %00010000
+COMMS_COMMAND_RESET_RX:               EQU %00100000
+COMMS_COMMAND_RESET_TX:               EQU %00110000
+COMMS_COMMAND_RESET_ERROR_STATUS:     EQU %01000000
+COMMS_COMMAND_RESET_BREAK_CHANGE_INT: EQU %01010000
+COMMS_COMMAND_START_BREAK:            EQU %01100000
+COMMS_COMMAND_STOP_BREAK:             EQU %01110000
+COMMS_COMMAND_START_COUNTERTIMER:     EQU %10000000
+COMMS_COMMAND_STOP_COUNTERTIMER:      EQU %10010000
+COMMS_COMMAND_ASSERT_RTSN_LOW:        EQU %10100000
+COMMS_COMMAND_NEGATE_RTSN_HIGH:       EQU %10110000
+COMMS_COMMAND_RESET_MPI_CHANGE_INT:   EQU %11000000
+; Note: Commands %11100000 and %11110000 are reserved.
+
+; Status Register [RO]
+; ====================
+
+COMMS_STATUS_RECEIVED_BREAK:          EQU %10000000 ; Break signal was detected on the reciever
+COMMS_STATUS_FRAMING_ERROR:           EQU %01000000 ; Stop bit wasn't detected at end of character
+COMMS_STATUS_PARITY_ERROR:            EQU %00100000 ; Parity error detected (or wake-up mode bit)
+COMMS_STATUS_OVERRUN_ERROR:           EQU %00010000 ; Overrun error detected (data not read quick enough)
+COMMS_STATUS_TX_EMPTY:                EQU %00001000 ; The transmitter is ready for new data, and its queue is empty (underrun)
+COMMS_STATUS_TX_READY:                EQU %00000100 ; Transmitter is ready
+COMMS_STATUS_FIFO_FULL:               EQU %00000010 ; The receiver FIFO queue is full. Another byte arriving in this state will cause an overrun error.
+COMMS_STATUS_RX_READY:                EQU %00000001 ; The receiver is ready to be read.
+
+; Auxiliary Control Register [WO] 
+; ===============================
+
+COMMS_ACR_BAUD_RATE_GENERATOR_SET_MASK: EQU %10000000
+COMMS_ACR_BAUD_RATE_GENERATOR_SET_1:    EQU %00000000
+COMMS_ACR_BAUD_RATE_GENERATOR_SET_2:    EQU %10000000
+
+COMMS_ACR_OPERATING_MODE_MASK:             EQU %01110000
+COMMS_ACR_COUNTER_MODE_CLK_SRC_MPI:        EQU %00000000
+COMMS_ACR_COUNTER_MODE_CLK_SRC_MPI_DIV_16: EQU %00010000
+COMMS_ACR_COUNTER_MODE_CLK_SRC_TX:         EQU %00100000
+COMMS_ACR_COUNTER_MODE_CLK_SRC_XTAL_DIV_16:EQU %00110000
+COMMS_ACR_TIMER_MODE_CLK_SRC_MPI:          EQU %01000000
+COMMS_ACR_TIMER_MODE_CLK_SRC_MPI_DIV_16:   EQU %01010000
+COMMS_ACR_TIMER_MODE_CLK_SRC_TX:           EQU %01100000
+COMMS_ACR_TIMER_MODE_CLK_SRC_XTAL_DIV_16:  EQU %01110000
+
+COMMS_ACR_POWERDOWN_MODE_MASK:             EQU %00001000
+COMMS_ACR_POWERDOWN_MODE_ENABLE:           EQU %00000000
+COMMS_ACR_POWERDOWN_MODE_DISABLE:          EQU %00001000
+
+COMMS_ACR_MPO_OUTPUT_SELECT_MASK:          EQU %00000111
+COMMS_ACR_MPO_RTSN:                        EQU %00000000
+COMMS_ACR_MPO_COUNTERTIMER:                EQU %00000001
+COMMS_ACR_MPO_1X_TX_CLOCK:                 EQU %00000010
+COMMS_ACR_MPO_16X_TX_CLOCK:                EQU %00000011
+COMMS_ACR_MPO_1X_RX_CLOCK:                 EQU %00000100
+COMMS_ACR_MPO_16X_RX_CLOCK:                EQU %00000101
+COMMS_ACR_MPO_TX_EMPTY_LOW:                EQU %00000110
+; The next two are the same value, and their meaning will
+; depend on how MR1 was configured.
+COMMS_ACR_MPO_RXRDY_LOW:                   EQU %00000111
+COMMS_ACR_MPO_FIFO_LOW:                   EQU %00000111
+
+; Interrupt Status Register [RO]
+; ==============================
+
+COMMS_ISR_MPI_CHANGED:                     EQU %10000000
+COMMS_ISR_MPI_STATE:                       EQU %01000000
+COMMS_ISR_COUNTER_READY:                   EQU %00010000
+COMMS_ISR_BREAK_CHANGED:                   EQU %00001000
+; The next two are the same value, and their meaning will
+; depend on how MR1 was configured.
+COMMS_ISR_RXRDY:                           EQU %00000100
+COMMS_ISR_FIFO_FULL:                       EQU %00000100
+COMMS_ISR_TX_EMPTY:                        EQU %00000010
+COMMS_ISR_TX_READY:                        EQU %00000001
+
+; Interrupt Mask Register [WO]
+; ============================
+; note: These are the same as the ISR values for their 
+; corresponding status bits.
+
+COMMS_IMR_MPI_CHANGED_ENABLE:              EQU %10000000
+COMMS_IMR_MPI_CHANGED_DISABLE:             EQU 0
+COMMS_IMR_MPI_STATE_ENABLE:                EQU %01000000
+COMMS_IMR_MPI_STATE_DISABLE:               EQU 0
+COMMS_IMR_COUNTER_READY_ENABLE:            EQU %00010000
+COMMS_IMR_COUNTER_READY_DISABLE:           EQU 0
+COMMS_IMR_BREAK_CHANGED_ENABLE:            EQU %00001000
+COMMS_IMR_BREAK_CHANGED_DISABLE:           EQU 0
+; The next two are the same value, and their meaning will
+; depend on how MR1 was configured.
+COMMS_IMR_RXRDY_ENABLE:                    EQU %00000100
+COMMS_IMR_RXRDY_DISABLE:                   EQU 0
+COMMS_IMR_FIFO_FULL_ENABLE:                EQU %00000100
+COMMS_IMR_FIFO_FULL_DISABLE:               EQU 0
+COMMS_IMR_TX_EMPTY_ENABLE:                 EQU %00000010
+COMMS_IMR_TX_EMPTY_DISABLE:                EQU 0
+COMMS_IMR_TX_READY_ENABLE:                 EQU %00000001
+COMMS_IMR_TX_READY_DISABLE:                EQU 0

@@ -1,2 +1,4 @@
 # samcoupestandardh
-Standard header files for SAM Coupé assembly development.
+
+This project contains a set of standard header files for SAM Coupé
+assembly-language development.

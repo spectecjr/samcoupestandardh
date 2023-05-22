@@ -1,0 +1,27 @@
+; SAM Coupé Disk Hardware Ports & Mappings
+; ----------------------------------------
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+DISK_0_BASE:        EQU 224
+DISK_1_BASE:        EQU 240
+
+DISK_STATUS:        EQU 0
+DISK_COMMAND:       EQU 0
+DISK_TRACK:         EQU 1
+DISK_SECTOR:        EQU 2
+DISK_DATA:          EQU 3
+DISK_SIDE_2:        EQU 4
+
+DISK_0_STATUS:      EQU DISK_0_BASE + DISK_STATUS
+DISK_0_COMMAND:     EQU DISK_0_BASE + DISK_COMMAND
+DISK_0_TRACK:       EQU DISK_0_BASE + DISK_TRACK
+DISK_0_SECTOR:      EQU DISK_0_BASE + DISK_SECTOR
+DISK_0_DATA:        EQU DISK_0_BASE + DISK_DATA
+
+DISK_1_STATUS:      EQU DISK_1_BASE + DISK_STATUS
+DISK_1_COMMAND:     EQU DISK_1_BASE + DISK_COMMAND
+DISK_1_TRACK:       EQU DISK_1_BASE + DISK_TRACK
+DISK_1_SECTOR:      EQU DISK_1_BASE + DISK_SECTOR
+DISK_1_DATA:        EQU DISK_1_BASE + DISK_DATA
