@@ -9,9 +9,9 @@
 ; IN A,(JOYSTICK)
 ; AND JOYSTICK_1_FIRE
 ; JP NZ,FIRE_PRESSED
-; 
+;
 ; NOTE: Joystick 1 and 2's bits are in reverse order to each
-;       other. 
+;       other.
 
 ; Low address (A7-A0) of port - this is the KEYBOARD port
 JOYSTICK:         EQU &FE       ; KEYBOARD port.
@@ -25,7 +25,7 @@ JOYSTICK_MASK:    EQU %00011111
 ; Port for use with LD BC, JOYSTICK_1_PORT : IN A,(C)
 JOYSTICK_1_PORT:  EQU &F7FE
 ; Port for use with LD A, JOYSTICK_PORTH : IN A,(JOYSTICK)
-JOYSTICK_1_PORTH: EQU &F7
+JOYSTICK_1_PORT_H:EQU &F7
 
 ; Input bit masks
 JOYSTICK_1_LEFT:  EQU %00010000 ; = KEY 6
@@ -40,7 +40,7 @@ JOYSTICK_1_FIRE:  EQU %00000001 ; = KEY 0
 ; Port for use with LD BC, JOYSTICK_2_PORT : IN A,(C)
 JOYSTICK_2_PORT:  EQU &F7FE
 ; Port for use with LD A, JOYSTICK_2_PORTH : IN A,(JOYSTICK)
-JOYSTICK_2_PORTH: EQU &F7
+JOYSTICK_2_PORT_H:EQU &F7
 
 ; Input bit masks
 JOYSTICK_2_LEFT:  EQU %00000001 ; = KEY 1

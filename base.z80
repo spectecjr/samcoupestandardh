@@ -6,7 +6,7 @@
 
 ; Colour lookup table (Palette) ports [WO]
 
-CLUT:               EQU 248 
+CLUT:               EQU 248
 PALETTE_ENTRY_0:    EQU CLUT + (0*256)
 PALETTE_ENTRY_1:    EQU CLUT + (1*256)
 PALETTE_ENTRY_2:    EQU CLUT + (2*256)
@@ -41,9 +41,9 @@ STATUS_LINE_INT:    EQU %00000001
 ; While this was named the MOUSE interrupt, it's currently used exclusively by
 ; the SAM Comms Interface for RS232 controller interrupts.
 ; The MOUSE doesn't use this, and instead has its own counters that are read out
-; serially by the user.  
-STATUS_COMMS_INT:   EQU %00000010 
-;STATUS_MOUSE_INT:   EQU %00000010 ; OBSOLETE 
+; serially by the user.
+STATUS_COMMS_INT:   EQU %00000010
+;STATUS_MOUSE_INT:  EQU %00000010 ; OBSOLETE
 STATUS_MIDI_IN_INT: EQU %00000100
 STATUS_FRAME_INT:   EQU %00001000
 STATUS_MIDI_OUT_INT:EQU %00010000
@@ -103,4 +103,3 @@ KEYBOARD_SCREEN_OFF:EQU %10000000
 
 MIDI_OUT:           EQU 253 ; [WO]
 MIDI_IN:            EQU 253 ; [RO]
-

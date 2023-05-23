@@ -4,24 +4,98 @@
 ; Author: Simon Cooke (spectecjr@gmail.com)
 ; Licensed under the MIT license (see LICENSE file).
 
-DISK_0_BASE:        EQU 224
-DISK_1_BASE:        EQU 240
+DISK_0_BASE:                                 EQU 224
+DISK_1_BASE:                                 EQU 240
 
-DISK_STATUS:        EQU 0
-DISK_COMMAND:       EQU 0
-DISK_TRACK:         EQU 1
-DISK_SECTOR:        EQU 2
-DISK_DATA:          EQU 3
-DISK_SIDE_2:        EQU 4
+DISK_STATUS:                                 EQU 0
+DISK_COMMAND:                                EQU 0
+DISK_TRACK:                                  EQU 1
+DISK_SECTOR:                                 EQU 2
+DISK_DATA:                                   EQU 3
+DISK_SIDE_2:                                 EQU 4
 
-DISK_0_STATUS:      EQU DISK_0_BASE + DISK_STATUS
-DISK_0_COMMAND:     EQU DISK_0_BASE + DISK_COMMAND
-DISK_0_TRACK:       EQU DISK_0_BASE + DISK_TRACK
-DISK_0_SECTOR:      EQU DISK_0_BASE + DISK_SECTOR
-DISK_0_DATA:        EQU DISK_0_BASE + DISK_DATA
+DISK_0_STATUS:                               EQU DISK_0_BASE + DISK_STATUS
+DISK_0_COMMAND:                              EQU DISK_0_BASE + DISK_COMMAND
+DISK_0_TRACK:                                EQU DISK_0_BASE + DISK_TRACK
+DISK_0_SECTOR:                               EQU DISK_0_BASE + DISK_SECTOR
+DISK_0_DATA:                                 EQU DISK_0_BASE + DISK_DATA
 
-DISK_1_STATUS:      EQU DISK_1_BASE + DISK_STATUS
-DISK_1_COMMAND:     EQU DISK_1_BASE + DISK_COMMAND
-DISK_1_TRACK:       EQU DISK_1_BASE + DISK_TRACK
-DISK_1_SECTOR:      EQU DISK_1_BASE + DISK_SECTOR
-DISK_1_DATA:        EQU DISK_1_BASE + DISK_DATA
+DISK_1_STATUS:                               EQU DISK_1_BASE + DISK_STATUS
+DISK_1_COMMAND:                              EQU DISK_1_BASE + DISK_COMMAND
+DISK_1_TRACK:                                EQU DISK_1_BASE + DISK_TRACK
+DISK_1_SECTOR:                               EQU DISK_1_BASE + DISK_SECTOR
+DISK_1_DATA:                                 EQU DISK_1_BASE + DISK_DATA
+
+; VL1772-02 Disk Controller Commands
+; Datasheet: https://datasheetspdf.com/datasheet/VL1772-02.html
+
+DISK_COMMAND_MASK:                           EQU %11110000
+
+; Type I commands
+DISK_CMD_RESTORE:                            EQU %00000000
+DISK_CMD_SEEK:                               EQU %00010000
+
+; Type I Stepping Commands
+DISK_CMD_STEP:                               EQU %00100000
+DISK_CMD_STEP_IN:                            EQU %01000000
+DISK_CMD_STEP_OUT:                           EQU %01100000
+
+; Stepping rate for type I commands:
+DISK_CMD_STEPPING_RATE_MASK:                 EQU %00000011
+
+DISK_COMMAND_STEPPING_RATE_6MS:              EQU %00000000
+DISK_COMMAND_STEPPING_RATE_12MS:             EQU %00000001
+DISK_COMMAND_STEPPING_RATE_2MS:              EQU %00000010
+; NOTE: SAM Drives support 3ms (according to SAMDOS2)
+DISK_COMMAND_STEPPING_RATE_3MS:              EQU %00000011
+
+; Type 1,2,3 Command Spin-Up flags
+DISK_CMD_ENABLE_SPIN_UP_SEQUENCE:            EQU 0
+DISK_CMD_DISABLE_SPIN_UP_SEQUENCE:           EQU %00001000
+
+; Type 1 Track Verify flags
+DISK_CMD_TYPE1_VERIFY_TRACK_DISABLED:        EQU 0
+DISK_CMD_TYPE1_VERIFY_TRACK_ENABLED:         EQU %00000100
+
+DISK_CMD_UPDATE_TRACK_REGISTER_ON_STEP:      EQU %00010000
+DISK_CMD_DONT_UPDATE_TRACK_REGISTER_ON_STEP: EQU %00000000
+
+DISK_CMD_READ_SECTOR:                        EQU %10000000
+DISK_CMD_READ_MULTI_SECTOR:                  EQU %10001000
+
+DISK_CMD_WRITE_SECTOR:                       EQU %10100000
+DISK_CMD_WRITE_MULTI_SECTOR:                 EQU %10110000
+
+DISK_CMD_TYPE2_15MS_SETTLING_DELAY:          EQU %00000100
+DISK_CMD_TYPE2_NO_SETTLING_DELAY:            EQU %00000000
+
+DISK_CMD_ENABLE_WRITE_PRECOMP:               EQU %00000010
+DISK_CMD_DISABLE_WRITE_PRECOMP:              EQU 0
+
+DISK_CMD_WRITE_SECTOR_MARK_VALID:            EQU %00000000
+DISK_CMD_WRITE_SECTOR_MARK_DELETED:          EQU %00000001
+
+; Type III Commands
+DISK_CMD_READ_ADDRESS:                       EQU %11000000
+DISK_CMD_READ_TRACK:                         EQU %11100000
+DISK_CMD_WRITE_TRACK:                        EQU %11110000
+
+; Type IV Commands
+DISK_CMD_TERMINATE_NO_INTERRUPT:             EQU %11010000
+DISK_CMD_IMTERRUPT_ON_INDEX_PULSE:           EQU %11010100
+DISK_CMD_IMMEDIATE_INTERRUPT:                EQU %11011000
+
+; Status bits
+DISK_STATUS_MOTOR_ON:                        EQU %10000000
+DISK_STATUS_WRITE_PROTECT:                   EQU %01000000
+DISK_STATUS_RECORD_TYPE:                     EQU %00100000
+DISK_STATUS_RECORD_DELETED:                  EQU %00100000
+DISK_STATUS_RECORD_VALID:                    EQU %00000000
+DISK_STATUS_SPIN_UP:                         EQU %00100000
+DISK_STATUS_RECORD_NOT_FOUND:                EQU %00010000
+DISK_STATUS_CRC_ERROR:                       EQU %00001000
+DISK_STATUS_LOST_DATA:                       EQU %00000100
+DISK_STATUS_TRACK_ZERO:                      EQU %00000100
+DISK_STATUS_DATA_READY:                      EQU %00000010 ; Data Request Index
+DISK_STATUS_INDEX_PULSE:                     EQU %00000010
+DISK_STATUS_BUSY:                            EQU %00000001 ; Command is running
