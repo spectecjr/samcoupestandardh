@@ -1,0 +1,104 @@
+; SAM Coupé Real-time clock support (SAMBus)
+; ------------------------------------------
+;
+; The SAM Coupé supports an external RTC clock (OKI M6242B)
+; device (usually via the SAMBUS interface expansion).
+;
+; It provides DATE/TIME support when used in MasterDOS.
+;
+; The recommended mechanism to read the clock is to read all of
+; the non-control registers in a loop. If the values match the previous
+; read, it is stable and not a torn data read. (The values should never
+; need to be read more than 3x).
+;
+; https://velesoft.speccy.cz/samcoupe/sambus/sambus.pdf
+;
+; Data sheet: https://www.alldatasheet.com/datasheet-pdf/pdf/11260/OKI/M6242B.html
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+RTC_BASE:                     EQU 239
+
+; The OKI M6242B only reads back 4 data bits. The upper 4 bits are floating.
+RTC_READ_MASK:                EQU %00001111
+
+RTC_SECONDS_1S:               EQU RTC_BASE + (0*256)
+RTC_SECONDS_1S_H:             EQU 0
+RTC_SECONDS_10S:              EQU RTC_BASE + (1*256)
+RTC_SECONDS_10S_H:            EQU 1
+
+; Note: If you use RTC_READ_MASK, you don't need to use RTC_SECONDS_10S_MASK as well;
+; all unused bits are read back as 0, and are ignored on write.
+RTC_SECONDS_10S_MASK:         EQU %00000111
+RTC_MINUTES_1S:               EQU RTC_BASE + (2*256)
+RTC_MINUTES_1S_H:             EQU 2
+RTC_MINUTES_10S:              EQU RTC_BASE + (3*256)
+RTC_MINUTES_10S_H:            EQU 3
+RTC_MINUTES_10S_MASK:         EQU %00000111
+RTC_HOURS_1S:                 EQU RTC_BASE + (4*256)
+RTC_HOURS_1S_H:               EQU 4
+RTC_HOURS_10S:                EQU RTC_BASE + (5*256)
+RTC_HOURS_10S_H:              EQU 5
+RTC_HOURS_10S_MASK:           EQU %00000011
+RTC_HOURS_10S_AMPM:           EQU %00000100
+RTC_HOURS_10S_AMPM_BIX:       EQU 2
+RTC_HOURS_IS_AM:              EQU 0
+RTC_HOURS_IS_PM:              EQU RTC_HOURS_10S_AMPM
+RTC_DAYS_1S:                  EQU RTC_BASE + (6*256)
+RTC_DAYS_1S_H:                EQU 6
+RTC_DAYS_10S:                 EQU RTC_BASE + (7*256)
+RTC_DAYS_10S_H:               EQU 7
+RTC_DAYS_10S_MASK:            EQU %00000011
+RTC_MONTHS_1S:                EQU RTC_BASE + (8*256)
+RTC_MONTHS_1S_H:              EQU 8
+RTC_MONTHS_10S:               EQU RTC_BASE + (9*256)
+RTC_MONTHS_10S_H:             EQU 9
+RTC_MONTHS_10S_MASK:          EQU %00000001
+RTC_YEARS_1S:                 EQU RTC_BASE + (10*256)
+RTC_YEARS_1S_H:               EQU 10
+RTC_YEARS_10S:                EQU RTC_BASE + (11*256)
+RTC_YEARS_10S_H:              EQU 11
+RTC_WEEKDAY:                  EQU RTC_BASE + (12*256)
+RTC_WEEKDAY_H:                EQU 12
+RTC_WEEKDAY_MASK:             EQU %00000111
+RTC_WEEKDAY_SUNDAY:           EQU 0
+RTC_WEEKDAY_MONDAY:           EQU 1
+RTC_WEEKDAY_TUESDAY:          EQU 2
+RTC_WEEKDAY_WEDNESDAY:        EQU 3
+RTC_WEEKDAY_THURSDAY:         EQU 4
+RTC_WEEKDAY_FRIDAY:           EQU 5
+RTC_WEEKDAY_SATURDAY:         EQU 6
+
+; Normally you shouldn't touch these to avoid messing up
+; MASTERDOS functionality. If you do mess with them,
+; consult the datasheet.
+RTC_CTRL_D_DONOTWRITE:        EQU RTC_BASE + (13*256)
+RTC_CTRL_D_30_SECOND_ADJ:     EQU %00001000
+RTC_CTRL_D_30_SECOND_ADJ_BIX: EQU 3
+RTC_CTRL_D_IRQ_FLAG:          EQU %00000100
+RTC_CTRL_D_IRQ_FLAG_BIX:      EQU 2
+RTC_CTRL_D_BUSY:              EQU %00000010
+RTC_CTRL_D_BUSY_BIX:          EQU 1
+RTC_CTRL_D_HOLD:              EQU %00000001
+RTC_CTRL_D_HOLD_BIX:          EQU 0
+
+RTC_CTRL_E_DONOTWRITE:        EQU RTC_BASE + (14*256)
+RTC_CTRL_E_T1:                EQU %1000
+RTC_CTRL_E_T1_BIX:            EQU 3
+RTC_CTRL_E_T0:                EQU %0100
+RTC_CTRL_E_T0_BIX:            EQU 2
+RTC_CTRL_E_ITRPT_STND:        EQU %0010
+RTC_CTRL_E_ITRPT_STND_BIX:    EQU 1
+RTC_CTRL_E_MASK:              EQU %0001
+RTC_CTRL_E_MASK_BIX:          EQU 0
+
+RTC_CTRL_F_DONOTWRITE:        EQU RTC_BASE + (15*256)
+RTC_CTRL_F_TEST:              EQU %00001000
+RTC_CTRL_F_TEST_BIX:          EQU 3
+RTC_CTRL_F_24_12:             EQU %00000100
+RTC_CTRL_F_24_12_BIX:         EQU 2
+RTC_CTRL_F_STOP:              EQU %00000010
+RTC_CTRL_F_STOP_BIX:          EQU 1
+RTC_CTRL_F_REST:              EQU %00000001
+RTC_CTRL_F_REST_BIX:          EQU 0

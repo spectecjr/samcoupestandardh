@@ -1,0 +1,21 @@
+; SAM Coupé MB External Memory Support
+; ------------------------------------
+;
+; The SAM Coupé allowed up to 4MB of memory to be added
+; to the back of the device (for more than one, via a
+; SAMBus), in 1MB increments.
+;
+; External memory is enabled in the memory range 32768-65535
+; by setting bit 7 of the HMPR port (HMPR_EXTERNAL_MEM or 
+; HMPR_XMEM_BIX). 
+;
+; The range 32768-49151 ("C") is mapped via the XMEMPRL
+; register (&80) to one of up to 256 16KiB pages.
+; The range 49152-65535 ("D") is mapped via the XMEMPRH
+; register (&81).
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+XMEMPRL: EQU &80
+XMEMPRH: EQU &81

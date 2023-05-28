@@ -16,6 +16,7 @@ Z80 assembly language development. They're meant to make your life easier by def
   - [Obsolete values](#obsolete-values)
   - [Read-only, Write-Only, and Read/Write markers](#read-only-write-only-and-readwrite-markers)
   - [`_MALIGN` and `_LEFTSHIFT` suffixes](#_malign-and-_leftshift-suffixes)
+  - [`_BIX` suffixes](#_bix-suffixes)
 - [Spelling](#spelling)
 - [Copyright and Licensing](#copyright-and-licensing)
 
@@ -164,6 +165,20 @@ indicated by the name to the left of the suffix. (**Warning:** This _could_ be z
 
 These may be more useful in macro-expansions than in code. in code you might be better off understanding the bit alignment
 and accounting for that yourself via look-up tables, shift instructions, or other methods to map to the correct alignment.
+
+### `_BIX` suffixes
+
+Any value suffixed with `_BIX` is a bit-index. This is the number of times you have to shift a value, or a value that can
+be used with `BIT n,r`, `SET n,r` and `RES n,r` instructions.
+
+**Example:**
+
+```z80
+ld bc,(RTC_HOURS_10S)
+in e,(c)
+bit RTC_HOURS_AMPM_BIX,E
+jr nz,clock.afternoon
+```
 
 ## Spelling
 
