@@ -1,4 +1,4 @@
-; SAM Coupé Real-time clock support (SAMBus)
+; SAM Coupé Real-Time Clock Support (SAMBus)
 ; ------------------------------------------
 ;
 ; The SAM Coupé supports an external RTC clock (OKI M6242B)
@@ -84,13 +84,13 @@ RTC_CTRL_D_HOLD:              EQU %00000001
 RTC_CTRL_D_HOLD_BIX:          EQU 0
 
 RTC_CTRL_E_DONOTWRITE:        EQU RTC_BASE + (14*256)
-RTC_CTRL_E_T1:                EQU %1000
+RTC_CTRL_E_T1:                EQU %00001000
 RTC_CTRL_E_T1_BIX:            EQU 3
-RTC_CTRL_E_T0:                EQU %0100
+RTC_CTRL_E_T0:                EQU %00000100
 RTC_CTRL_E_T0_BIX:            EQU 2
-RTC_CTRL_E_ITRPT_STND:        EQU %0010
+RTC_CTRL_E_ITRPT_STND:        EQU %00000010
 RTC_CTRL_E_ITRPT_STND_BIX:    EQU 1
-RTC_CTRL_E_MASK:              EQU %0001
+RTC_CTRL_E_MASK:              EQU %00000001
 RTC_CTRL_E_MASK_BIX:          EQU 0
 
 RTC_CTRL_F_DONOTWRITE:        EQU RTC_BASE + (15*256)

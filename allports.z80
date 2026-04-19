@@ -1,5 +1,5 @@
-; All ports
-; ----------
+; SAM Coupé - All ports
+; ---------------------
 ;
 ; Include this file to include all of the others.
 ;
@@ -14,3 +14,5 @@ INCLUDE "joystick.z80"
 INCLUDE "keyboard.z80"
 INCLUDE "lightpen.z80"
 INCLUDE "sound.z80"
+INCLUDE "externalmemory.z80"
+INCLUDE "realtimeclock.z80"

@@ -1,0 +1,18 @@
+; SAM Coupé - All ports
+; ---------------------
+;
+; Include this file to include all of the others.
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+include "base.z80"
+include "colours.z80"
+include "comms.z80"
+include "disk.z80"
+include "joystick.z80"
+include "keyboard.z80"
+include "lightpen.z80"
+include "sound.z80"
+include "externalmemory.z80"
+include "realtimeclock.z80"

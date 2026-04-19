@@ -1,4 +1,4 @@
-; SAM Coupé joystick port and mask bits
+; SAM Coupé Joystick Port and Mask Bits
 ; -------------------------------------
 ;
 ; Author: Simon Cooke (spectecjr@gmail.com)
@@ -23,9 +23,9 @@ JOYSTICK_MASK:    EQU %00011111
 ; ===============================
 
 ; Port for use with LD BC, JOYSTICK_1_PORT : IN A,(C)
-JOYSTICK_1_PORT:  EQU &F7FE
+JOYSTICK_1_PORT:  EQU &EFFE
 ; Port for use with LD A, JOYSTICK_PORTH : IN A,(JOYSTICK)
-JOYSTICK_1_PORT_H:EQU &F7
+JOYSTICK_1_PORT_H:EQU &EF
 
 ; Input bit masks
 JOYSTICK_1_LEFT:  EQU %00010000 ; = KEY 6

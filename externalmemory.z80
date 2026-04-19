@@ -1,5 +1,5 @@
-; SAM Coupé MB External Memory Support
-; ------------------------------------
+; SAM Coupé 4MB External Memory Support
+; -------------------------------------
 ;
 ; The SAM Coupé allowed up to 4MB of memory to be added
 ; to the back of the device (for more than one, via a

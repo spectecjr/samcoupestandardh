@@ -38,12 +38,13 @@ Following is the list of files included in this repository, and what they're for
 
 ## Coding Style
 
-- We use `UPPERCASE` names for constants. `ITSABITSHOUTY`
+- We use consistent casing for constants within a file. FIles ending in "_l.z80" are lowercase variants, without the _l. they're UPPERCASE. 
 - We use `_` for separators within constants. `SEE_WHAT_I_MEAN`?
 - We use `lowercase.names:` with periods as separators for
   code labels.
 - We use `lowercase` for assembly instructions.
 - We use `UPPERCASE` for assembly directives (`EQU`, `DW`, `INCLUDE`, etc...)
+- We provide US and UK English spelling variants. Where it makes sense to do so, they're provided in separate files. Usually, they're provided inline immediately below the UK variant.
 
 ## Conventions
 
@@ -91,7 +92,7 @@ AMPLITUDE_MAX: EQU 15
 
 Some values are given even though they're going to be `or`ed into something, and they have the value of zero. This is so that you can be explicit about what you're doing, and spell it out.
 
-(This kind of things is an assemble-time operation; it won't cost anything at runtime).
+(This kind of thing is an assemble-time operation; it won't cost anything at runtime).
 
 **Example:**
 
@@ -182,10 +183,15 @@ jr nz,clock.afternoon
 
 ## Spelling
 
-We try to use _UK English_ spellings (en-GB) wherever possible, because the SAM Coupé is a British computer.
-
-(That said, we've lived in the US for most of our adult lives now - since 1997 - so some US spellings will creep in).
+We now provide UK and US english spellings in the headers where there are differences (only COLOR/COLOUR so far).
 
 ## Copyright and Licensing
 
  The provided source code and documentation are Copyright &copy; 2023 Simon Cooke, and are licensed under the MIT license (see the [LICENSE](./LICENSE) file).
+
+ In this release we've provided a lot of datasheets and other documentation. We'd like feedback on this - we could put
+ these in a separate repository.
+
+ Also, if people object to us redistributing their copyrighted work, let us know, and we'll stop redistributing it and
+ provide an end-user mechanism to download it from the official site instead - although many of these parts are obsolete
+ and datasheets are often intended to be redistributed broadly.

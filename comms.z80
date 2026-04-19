@@ -210,7 +210,7 @@ COMMS_RX_CLOCK_MASK:                       EQU &F0
 COMMS_TX_CLOCK_MASK:                       EQU &0F
 
 ; Baud rates:
-; With ACR Baud Generator Set to 0
+; With ACR Baud Generator Set 1 (COMMS_ACR_BAUD_RATE_GENERATOR_SET_1 / ACR bit 7 = 0)
 
 COMMS_CLOCKRATE_50_BAUD:                   EQU %0000
 COMMS_CLOCKRATE_200_BAUD:                  EQU %0011
@@ -218,8 +218,8 @@ COMMS_CLOCKRATE_1050_BAUD:                 EQU %0111
 COMMS_CLOCKRATE_7200_BAUD:                 EQU %1010
 COMMS_CLOCKRATE_38400_BAUD:                EQU %1100
 
-; With ACR Baud Generator Set to 1
-; (Holes are same as set to 0)
+; With ACR Baud Generator Set 2 (COMMS_ACR_BAUD_RATE_GENERATOR_SET_2 / ACR bit 7 = 1)
+; (Holes are same as Set 1)
 
 COMMS_CLOCKRATE_75_BAUD:                   EQU %0000
 COMMS_CLOCKRATE_150_BAUD:                  EQU %0011

@@ -1,0 +1,13 @@
+; SAM Coupé Lightpen / Serial Port
+; --------------------------------
+;
+; Author: Simon Cooke (spectecjr@gmail.com)
+; Licensed under the MIT license (see LICENSE file).
+
+lpen:                equ 248
+xpen:                equ lpen
+xpen_coord_mask:     equ %11111100
+lpen_clut_bcd1:      equ %00000001
+lpen_miditxfmst_bit: equ %00000010
+hpen:                equ 504
+ypen:                equ hpen
