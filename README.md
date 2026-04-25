@@ -24,9 +24,9 @@ Z80 assembly language development. They're meant to make your life easier by def
 
 Following is the list of files included in this repository, and what they're for.
 
-|Filename|Description|
-|--------|-----------|
-| [allports.z80](allports.z80) | Master include that includes all of the other files. Include this in your program to make your life a little easier.|
+| Filename | Description |
+| -------- | ----------- |
+| [allports.z80](allports.z80) | Master include that includes all of the other files. Include this in your program to make your life a little easier. |
 | [base.z80](base.z80) | Ports needed by nearly every program (plus a few that didn't make sense to split out into their own file, like MIDI). |
 | [colours.z80](colours.z80) | Helpful constants for standard color palette values. |
 | [comms.z80](comms.z80) | Constants used by the SAM Coupé Serial and Printer interfaces. |
@@ -38,7 +38,7 @@ Following is the list of files included in this repository, and what they're for
 
 ## Coding Style
 
-- We use consistent casing for constants within a file. FIles ending in "_l.z80" are lowercase variants, without the _l. they're UPPERCASE. 
+- We use consistent casing for constants within a file. FIles ending in "_l.z80" are lowercase variants, without the_l. they're UPPERCASE.
 - We use `_` for separators within constants. `SEE_WHAT_I_MEAN`?
 - We use `lowercase.names:` with periods as separators for
   code labels.
@@ -124,6 +124,7 @@ in a,(COMMS_0_BASE)
 ```
 
 ... whereas you'd use the version without `_H` like this:
+
 ```z80
 ld bc,COMMS_0_BASE + COMMS_MR
 in a,(c)
