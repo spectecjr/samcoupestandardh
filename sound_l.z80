@@ -126,9 +126,9 @@ sound_envelope_enabled:            equ %10000000
 sound_envelope_disabled:           equ 0
 
 sound_enable_mask:                 equ %00000001
-sound_enable_on:                   equ %00000001
-sound_enable_off:                  equ 0
+sound_enable_on:                   equ %00000001 ; Master sound output enabled.
+sound_enable_off:                  equ 0         ; Master sound output disabled.
 
 sound_freq_generator_mask:         equ %00000010
-soudn_freq_generator_reset:        equ %00000010
-sound_freq_generator_enable:       equ 0
+sound_freq_generator_reset:        equ %00000010 ; Resets and synchronizes frequency generators. 
+sound_freq_generator_enable:       equ 0         ; Enables frequency generators to run freely.
