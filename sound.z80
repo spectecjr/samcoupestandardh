@@ -45,6 +45,7 @@ SOUND_ENV_GENERATOR_0:            EQU &18
 SOUND_ENV_GENERATOR_1:            EQU &19
 SOUND_UNUSED_7:                   EQU &1A
 SOUND_UNUSED_8:                   EQU &1B
+; Sound enable register also handles freq. generator sync/reset - see datasheet
 SOUND_ENABLE:                     EQU &1C
 
 ; These apply to SOUND_OSCn_AMPLITUDE channels
@@ -125,5 +126,9 @@ SOUND_ENVELOPE_ENABLED:            EQU %10000000
 SOUND_ENVELOPE_DISABLED:           EQU 0
 
 SOUND_ENABLE_MASK:                 EQU %00000001
-SOUND_ENABLE_ON:                   EQU %00000001
-SOUND_ENABLE_OFF:                  EQU 0
+SOUND_ENABLE_ON:                   EQU %00000001 ; Master sound output enabled.
+SOUND_ENABLE_OFF:                  EQU 0         ; Master sound output disabled.
+
+SOUND_FREQ_GENERATOR_MASK:         EQU %00000010
+SOUND_FREQ_GENERATOR_RESET:        EQU %00000010 ; Resets and synchronizes frequency generators.
+SOUND_FREQ_GENERATOR_ENABLE:       EQU 0         ; Enables frequency generators to run freely.

@@ -45,7 +45,8 @@ sound_env_generator_0:            equ &18
 sound_env_generator_1:            equ &19
 sound_unused_7:                   equ &1a
 sound_unused_8:                   equ &1b
-sound_enable:                     equ &1c
+; Sound enable register also handles freq. generator sync/reset - see datasheet
+sound_enable:                     equ &1c 
 
 ; These apply to SOUND_OSCn_AMPLITUDE channels
 sound_amplitude_left_mask:         equ %00001111
@@ -127,3 +128,7 @@ sound_envelope_disabled:           equ 0
 sound_enable_mask:                 equ %00000001
 sound_enable_on:                   equ %00000001
 sound_enable_off:                  equ 0
+
+sound_freq_generator_mask:         equ %00000010
+soudn_freq_generator_reset:        equ %00000010
+sound_freq_generator_enable:       equ 0
